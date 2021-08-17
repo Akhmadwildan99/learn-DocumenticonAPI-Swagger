@@ -115,7 +115,7 @@ router.get('/', async (req, res) => {
  *  /books/{id}/:
  *   get:
  *    tags: [Books]
- *    summary: Returns the list of all the book
+ *    summary: Returns the list of  the book by Id
  *    parameters:
  *      - in: path
  *        name: id
@@ -129,7 +129,7 @@ router.get('/', async (req, res) => {
  *         $ref: '#/components/schemas/Book'
  *    responses:
  *       "200":
- *         description: The list of book
+ *         description: The list of book by Id
 
  */
 
@@ -143,6 +143,71 @@ router.get('/', async (req, res) => {
         })
     }
 });
+
+/**
+ * @swagger
+ * paths:
+ *  /books/{id}/:
+ *   put:
+ *    tags: [Books]
+ *    summary: Update the book that finished read
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *        type: string
+ *        required: true
+ *        description: The book id
+ *    content:
+ *      application/json:
+ *      schema:
+ *         $ref: '#/components/schemas/Book'
+ *    responses:
+ *       "200":
+ *         description: The book are finished read
+
+ */
+router.put('/:id', async (req, res) => {
+    try {
+        const book = await Book.update({isRead: true},{where: {id: req.params.id} });
+        res.status(200).json({message: `Buku selesai dibaca`})
+    } catch {
+        res.status(401).json({message: 'Buku belum selesai dibaca'})
+    }
+});
+
+
+/**
+ * @swagger
+ * paths:
+ *  /books/{id}/:
+ *   delete:
+ *    tags: [Books]
+ *    summary: Remove book from the list
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *        type: string
+ *        required: true
+ *        description: The book id
+ *    content:
+ *      application/json:
+ *      schema:
+ *         $ref: '#/components/schemas/Book'
+ *    responses:
+ *       "200":
+ *         description: Successed remove book from the list
+
+ */
+router.delete('/:id', async (req, res) => {
+    try {
+        const book = await Book.destroy({where: {id: req.params.id}});
+        res.status(200).json({message: "Menghapus buku dari list!"});
+    } catch  {
+        res.status(401).json({message: "Tidak berhasil menghapus buku dari list!"})
+    }
+})
  
 
 module.exports = router
